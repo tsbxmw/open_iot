@@ -10,7 +10,7 @@ import (
 func main() {
 	httpServer := http.HttpServer{}
 	config := common.ServiceConfigImpl{}
-	app, err := common.App("open_iot", "sample for project of gin", httpServer, config)
+	app, err := common.App("keng", "keng for open iot", httpServer, config)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)

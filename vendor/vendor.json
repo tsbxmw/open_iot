@@ -425,6 +425,42 @@
 			"revisionTime": "2019-11-19T21:35:34Z"
 		},
 		{
+			"checksumSHA1": "BDUWVAK9B0XjnLRkb8W+wmEmwn4=",
+			"path": "go_gin_sample/project/config",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
+			"checksumSHA1": "ft78WhmYR6ZnVUl0jrvLPmRwG5s=",
+			"path": "go_gin_sample/project/models",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
+			"checksumSHA1": "uOyPiA0fFSHW6BGnlMvxBGvb7Js=",
+			"path": "go_gin_sample/project/routers",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
+			"checksumSHA1": "jpLspw+IRPYHm7ji+jhLy/NW5EI=",
+			"path": "go_gin_sample/project/routers/v1",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
+			"checksumSHA1": "P9Z22/H6Ww0IZLSjE+y/5uNR5K0=",
+			"path": "go_gin_sample/project/service",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
+			"checksumSHA1": "/Iz1ucZQegLCOpgUK2PwZ0326Ww=",
+			"path": "go_gin_sample/project/worker",
+			"revision": "3d56053626c774b31350de46925a2f53bdfc3c21",
+			"revisionTime": "2020-01-22T06:29:10Z"
+		},
+		{
 			"checksumSHA1": "RGFEeJVsaq+s5qGwd0MzXNMMFSU=",
 			"path": "golang.org/x/lint",
 			"revision": "959b441ac422379a43da2230f62be024250818b0",
@@ -485,5 +521,5 @@
 			"revisionTime": "2019-11-19T21:27:36Z"
 		}
 	],
-	"rootPath": "go_gin_sample"
+	"rootPath": "open_iot"
 }
