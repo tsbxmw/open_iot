@@ -2,9 +2,9 @@ package http
 
 import (
 	"fmt"
-	"go_gin_sample/project/config"
-	"go_gin_sample/project/routers"
-	"go_gin_sample/project/worker"
+	"open_iot/keng/config"
+	"open_iot/keng/routers"
+	"open_iot/keng/worker"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

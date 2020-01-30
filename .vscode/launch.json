@@ -18,6 +18,21 @@
             ],
             "cwd": "${workspaceFolder}",
             "output": "${workspaceFolder}/device—main"
+        },
+        {
+            "name": "keng",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/app/keng/keng.go",
+            "env": {},
+            "args": [
+                "--config=./keng/config/dev.json",
+                "--mode=debug",
+                "httpserver"
+            ],
+            "cwd": "${workspaceFolder}",
+            "output": "${workspaceFolder}/keng-main"
         }
     ]
 }

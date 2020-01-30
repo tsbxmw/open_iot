@@ -2,7 +2,7 @@ package service
 
 import (
 	common "github.com/tsbxmw/gin_common"
-	"go_gin_sample/project/models"
+	"open_iot/keng/models"
 	"time"
 )
 
