@@ -18,6 +18,7 @@ func InitRouter(r *gin.Engine) {
 		{
 			keng.POST("/", v1.KengAdd)
 			keng.GET("/", v1.KengGet)
+			keng.GET("/list", v1.KengGetList)
 		}
 	}
 }

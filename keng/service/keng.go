@@ -103,6 +103,18 @@ func (cps *ProjectService) KengGetList(req *KengGetListRequest) *KengGetListResp
 		Data: make([]models.KengModel, 0),
 	}
 	db := common.DB.Table(models.KengModel{}.TableName())
+	if req.RoomId != 0 {
+		db = db.Where("room_id=?", req.RoomId)
+	}
+	if req.DeviceId != 0 {
+		db = db.Where("device_id=?", req.DeviceId)
+	}
+	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
+		common.LogrusLogger.Error(err)
+		common.InitKey(cps.Ctx)
+		cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
+		panic(err)
+	}
 
 	return &res
 }
