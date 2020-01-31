@@ -1,9 +1,3 @@
 *.log
 
-*-main
-
-.vscode
-./.vscode/*
-
-./log/carphone.log
-./log/carphone.log-temp
+log/*

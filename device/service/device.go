@@ -1,16 +1,17 @@
 package service
 
 import (
-	common "github.com/tsbxmw/gin_common"
 	"open_iot/device/models"
 	"time"
+
+	common "github.com/tsbxmw/gin_common"
 )
 
 func (cps *ProjectService) DeviceAdd(req *DeviceAddRequest) *DeviceAddResponse {
 	res := DeviceAddResponse{}
 	device := models.DeviceModel{}
 	if err := common.DB.Table(device.TableName()).
-		Where("macaddress=?", req.MacAddress).First(&device).Error; err != nil {
+		Where("mac_address=?", req.MacAddress).First(&device).Error; err != nil {
 		if err.Error() == "record not found" {
 			device.Name = req.Name
 			device.DeviceType = req.DeviceType
@@ -94,7 +95,6 @@ func (cps *ProjectService) IPUpdate(req *IPUpdateRequest) *IPUpdateResponse {
 			Message: common.HTTP_MESSAGE_OK,
 		},
 	}
-
 	redisConn := common.RedisPool.Get()
 	defer redisConn.Close()
 	if value, err := common.RedisGetCommon(redisConn, req.MacAddress); err != nil {
@@ -112,14 +112,20 @@ func (cps *ProjectService) IPUpdate(req *IPUpdateRequest) *IPUpdateResponse {
 	device := models.DeviceModel{}
 
 	if err := common.DB.Table(device.TableName()).
-		Where("mac_address=?", req.MacAddress).First(&device).Error; err != nil {
+		Where("mac_address=?", req.MacAddress).First(&device).Error; err == nil {
 		device.IpAddress = req.IpAddress
+		common.LogrusLogger.Info(device.IpAddress)
 		if err := common.DB.Model(&device).Save(&device).Error; err != nil {
 			common.LogrusLogger.Error(err)
 			common.InitKey(cps.Ctx)
 			cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
 			panic(err)
 		}
+	} else {
+		common.LogrusLogger.Error(err)
+		common.InitKey(cps.Ctx)
+		cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+		panic(err)
 	}
 	return &res
 }

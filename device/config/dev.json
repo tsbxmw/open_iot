@@ -4,7 +4,7 @@
   "consul_port": 8500,
   "db_uri": "root:mengwei@(122.51.145.198:3306)/open_iot?parseTime=true&loc=Local",
   "jaeger_addr": "122.51.145.198:5775",
-  "log_file": "log/open_iot.log",
+  "log_file": "log/open_iot_device.log",
   "port": 9060,
   "grpc_port": 9061,
   "retry_max": 3,
