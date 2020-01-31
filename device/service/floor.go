@@ -106,6 +106,14 @@ func (cps *ProjectService) FloorGetList(req *FloorGetListRequest) *FloorGetListR
 	}
 	db := common.DB.Table(models.FloorModel{}.TableName())
 
+	if req.LocationId != 0 {
+		db = db.Where("location_id=?", req.LocationId)
+	}
+
+	if req.BuildingId != 0 {
+		db = db.Where("building_id=?", req.BuildingId)
+	}
+
 	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
 		if err.Error() != "record not found" {
 			common.LogrusLogger.Error(err)

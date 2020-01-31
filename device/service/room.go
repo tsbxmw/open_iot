@@ -114,6 +114,18 @@ func (cps *ProjectService) RoomGetList(req *RoomGetListRequest) *RoomGetListResp
 		Offset: req.Offset,
 	}
 	db := common.DB.Table(models.RoomModel{}.TableName())
+	if req.LocationId != 0 {
+		db = db.Where("location_id=?", req.LocationId)
+	}
+	if req.BuildingId != 0 {
+		db = db.Where("building_id=?", req.BuildingId)
+	}
+	if req.FloorId != 0 {
+		db = db.Where("floor_id=?", req.FloorId)
+	}
+	if req.RoomType != 0 {
+		db = db.Where("room_type=?", req.RoomType)
+	}
 
 	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
 		if err.Error() != "record not found" {

@@ -81,7 +81,7 @@ func (cps *ProjectService) LocationUpdate(id string, req *LocationUpdateRequest)
 
 func (cps *ProjectService) LocationGet(req *LocationGetRequest) *LocationGetResponse {
 	location := models.LocationModel{}
-
+	common.LogrusLogger.Info(req.LocationId)
 	if err := common.DB.Table(location.TableName()).
 		First(&location, req.LocationId).Error; err != nil {
 		common.LogrusLogger.Error(err)

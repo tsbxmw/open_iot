@@ -108,6 +108,10 @@ func (cps *ProjectService) BuildingGetList(req *BuildingGetListRequest) *Buildin
 	}
 	db := common.DB.Table(models.BuildingModel{}.TableName())
 
+	if req.LocationId != 0 {
+		db = db.Where("location_id=?", req.LocationId)
+	}
+
 	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
 		if err.Error() != "record not found" {
 			common.LogrusLogger.Error(err)

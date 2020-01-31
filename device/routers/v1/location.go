@@ -39,7 +39,6 @@ func LocationGet(c *gin.Context) {
 		c.Keys["code"] = common.HTTP_MISS_PARAMS
 		panic(err)
 	}
-
 	cps := service.NewServiceMgr(c)
 	res := cps.LocationGet(&req)
 

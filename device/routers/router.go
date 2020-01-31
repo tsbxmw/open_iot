@@ -32,6 +32,30 @@ func InitRouter(r *gin.Engine) {
 				location.GET("/", v1.LocationGet)
 				location.GET("/list", v1.LocationGetList)
 			}
+
+			building := ManagementV1.Group("/building")
+			{
+				building.POST("/", v1.BuildingAdd)
+				building.POST("/:id", v1.BuildingUpdate)
+				building.GET("/", v1.BuildingGet)
+				building.GET("/list", v1.BuildingGetList)
+			}
+
+			floor := ManagementV1.Group("/floor")
+			{
+				floor.POST("/", v1.FloorAdd)
+				floor.POST("/:id", v1.FloorUpdate)
+				floor.GET("/", v1.FloorGet)
+				floor.GET("/list", v1.FloorGetList)
+			}
+
+			room := ManagementV1.Group("/room")
+			{
+				room.POST("/", v1.RoomAdd)
+				room.POST("/:id", v1.RoomUpdate)
+				room.GET("/", v1.RoomGet)
+				room.GET("/list", v1.RoomGetList)
+			}
 		}
 
 		DeviceV1 := GroupV1.Group("/iot")

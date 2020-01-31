@@ -68,7 +68,7 @@ type (
 	}
 
 	LocationGetRequest struct {
-		LocationId int `json:"location_id"`
+		LocationId int `form:"location_id" binding:"required"`
 	}
 
 	LocationGetListRequest struct {
@@ -97,7 +97,7 @@ type (
 	BuildingGetListRequest struct {
 		Limit      int `form:"limit" binding:"required"`
 		Offset     int `form:"offset" binding:"required"`
-		LocationId int `form:"location_id" binding:"required"`
+		LocationId int `form:"location_id"`
 	}
 )
 
@@ -116,7 +116,7 @@ type (
 		Remark     string `json:"remark"`
 	}
 	FloorGetRequest struct {
-		FloorId int `form:"floor_id"`
+		FloorId int `form:"floor_id" binding:"required"`
 	}
 
 	FloorGetListRequest struct {
@@ -147,7 +147,7 @@ type (
 	}
 
 	RoomGetRequest struct {
-		RoomId int `form:"room_id"`
+		RoomId int `form:"room_id" binding:"required"`
 	}
 
 	RoomGetListRequest struct {
