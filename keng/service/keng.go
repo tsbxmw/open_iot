@@ -13,31 +13,34 @@ func (cps *ProjectService) KengAdd(req *KengAddRequest) *KengAddResponse {
 			Message: common.HTTP_MESSAGE_OK,
 		},
 	}
-	keng := models.KengModel{}
-	if err := common.DB.Table(keng.TableName()).
-		Where("device_id=? and index=? and room_id=?", req.DeviceId, req.Index, req.RoomId).
-		First(&keng).Error; err != nil {
-		if err.Error() == "record not found" {
-			keng.Remark = req.Remark
-			keng.Name = req.Name
-			keng.RoomId = req.RoomId
-			keng.DeviceId = req.DeviceId
-			keng.Index = req.Index
+	count := 0
+	common.LogrusLogger.Info(req.Index, req.RoomId)
+	if err := common.DB.Table(models.KengModel{}.TableName()).
+		Where("device_id=? and `index`=? and room_id=?", req.DeviceId, req.Index, req.RoomId).Count(&count).Error; err != nil {
+		common.LogrusLogger.Error(err)
+		common.InitKey(cps.Ctx)
+		cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
+		panic(err)
+	}
+	if count == 0 {
+		keng := models.KengModel{}
 
-			keng.BaseModel.ModifiedTime = time.Now()
-			keng.BaseModel.CreationTime = time.Now()
+		keng.Remark = req.Remark
+		keng.Name = req.Name
+		keng.RoomId = req.RoomId
+		keng.DeviceId = req.DeviceId
+		keng.Index = req.Index
 
-			if err = common.DB.Table(keng.TableName()).Create(&keng).Error; err != nil {
-				cps.Ctx.Keys["code"] = common.MYSQL_CREATE_ERROR
-				panic(err)
-			} else {
-				res.Code = common.HTTP_RESPONSE_OK
-				res.Message = common.HTTP_MESSAGE_OK
-				res.Data = []string{}
-			}
-		} else {
+		keng.BaseModel.ModifiedTime = time.Now()
+		keng.BaseModel.CreationTime = time.Now()
+
+		if err := common.DB.Table(keng.TableName()).Create(&keng).Error; err != nil {
 			cps.Ctx.Keys["code"] = common.MYSQL_CREATE_ERROR
 			panic(err)
+		} else {
+			res.Code = common.HTTP_RESPONSE_OK
+			res.Message = common.HTTP_MESSAGE_OK
+			res.Data = []string{}
 		}
 	} else {
 		res.Code = 0

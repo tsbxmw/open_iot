@@ -17,6 +17,7 @@ func InitRouter(r *gin.Engine) {
 		keng := GroupV1.Group("/keng")
 		{
 			keng.POST("/", v1.KengAdd)
+			keng.POST("/:id", v1.KengUpdate)
 			keng.GET("/", v1.KengGet)
 			keng.GET("/list", v1.KengGetList)
 		}

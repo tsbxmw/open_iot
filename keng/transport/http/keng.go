@@ -37,7 +37,7 @@ func (httpServer HttpServer) Serve(mode string) {
 	}
 	engin := gin.New()
 	// init logger
-	middleware.LoggerInit(engin, "./log/carphone.log")
+	middleware.LoggerInit(engin, "./log/open_iot_keng.log")
 	// init tracer
 	//middleware.TracerInit(engin, httpServer.JaegerAddr, httpServer.SvcName)
 	//defer (*middleware.TracerCloser).Close()
