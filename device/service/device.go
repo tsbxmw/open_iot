@@ -173,6 +173,7 @@ func (cps *ProjectService) DeviceGetList(req *DeviceGetListRequest) *DeviceGetLi
 	if req.RoomId != 0 {
 		db = db.Where("room_id=?", req.RoomId)
 	}
+
 	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
 		if err.Error() != "record not found" {
 			common.LogrusLogger.Error(err)
@@ -181,6 +182,7 @@ func (cps *ProjectService) DeviceGetList(req *DeviceGetListRequest) *DeviceGetLi
 			panic(err)
 		}
 	}
+
 	if err := db.Count(&res.Count).Error; err != nil {
 		if err.Error() != "record not found" {
 			common.LogrusLogger.Error(err)

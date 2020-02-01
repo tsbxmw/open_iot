@@ -17,14 +17,6 @@ func InitRouter(r *gin.Engine) {
 				user.GET("/", v1.UserGet)
 			}
 
-			device := ManagementV1.Group("/device")
-			{
-				device.POST("/", v1.DeviceAdd)
-				device.POST("/:id", v1.DeviceUpdate)
-				device.GET("/", v1.DeviceGet)
-				device.GET("/list", v1.DeviceGetList)
-			}
-
 			location := ManagementV1.Group("/location")
 			{
 				location.POST("/", v1.LocationAdd)
@@ -67,5 +59,4 @@ func InitRouter(r *gin.Engine) {
 		}
 
 	}
-
 }
