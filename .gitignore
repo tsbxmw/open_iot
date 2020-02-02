@@ -3,3 +3,10 @@
 log/*
 
 .vscode/*s
+
+.DS_Store
+
+device/.DS_Store
+device/models/.DS_Store
+
+log/open_iot.*
