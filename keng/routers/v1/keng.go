@@ -1,9 +1,10 @@
 package v1
 
 import (
+	"open_iot/keng/service"
+
 	"github.com/gin-gonic/gin"
 	common "github.com/tsbxmw/gin_common"
-	"open_iot/keng/service"
 )
 
 func KengAdd(c *gin.Context) {
@@ -59,4 +60,10 @@ func KengGetList(c *gin.Context) {
 	res := cps.KengGetList(&req)
 
 	c.JSON(common.HTTP_STATUS_OK, &res)
+}
+
+func KengGetFront(c *gin.Context) {
+	common.InitKey(c)
+	req := service.KengGetFrontRequest{}
+
 }

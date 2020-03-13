@@ -34,9 +34,14 @@ type (
 	}
 
 	KengGetListRequest struct {
-		Limit    int `form:"limit" binding:"required"`
-		Offset   int `form:"offset" binding:"required"`
-		RoomId   int `form:"room_id"`
-		DeviceId int `form:"device_id"`
+		Limit      int `form:"limit" binding:"required"`
+		Offset     int `form:"offset" binding:"required"`
+		BuildingId int `form:"building_id"`
+		RoomId     int `form:"room_id"`
+		DeviceId   int `form:"device_id"`
+	}
+
+	KengGetFrontRequest struct {
+		BuildingId int `form:"building_id" binding:"required"`
 	}
 )

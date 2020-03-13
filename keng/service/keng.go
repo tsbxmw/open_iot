@@ -1,9 +1,10 @@
 package service
 
 import (
-	common "github.com/tsbxmw/gin_common"
 	"open_iot/keng/models"
 	"time"
+
+	common "github.com/tsbxmw/gin_common"
 )
 
 func (cps *ProjectService) KengAdd(req *KengAddRequest) *KengAddResponse {
@@ -106,6 +107,7 @@ func (cps *ProjectService) KengGetList(req *KengGetListRequest) *KengGetListResp
 		Data: make([]models.KengModel, 0),
 	}
 	db := common.DB.Table(models.KengModel{}.TableName())
+
 	if req.RoomId != 0 {
 		db = db.Where("room_id=?", req.RoomId)
 	}

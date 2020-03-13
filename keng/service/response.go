@@ -38,4 +38,11 @@ type (
 		Offset int                `json:"offset"`
 		Count  int                `json:"count"`
 	}
+
+	KengRoom struct {
+	}
+
+	KengGetFrontResponse struct {
+		common.Response
+	}
 )

@@ -1,9 +1,10 @@
 package v1
 
 import (
+	"open_iot/device/service"
+
 	"github.com/gin-gonic/gin"
 	common "github.com/tsbxmw/gin_common"
-	"open_iot/device/service"
 )
 
 func DeviceAdd(c *gin.Context) {
@@ -35,6 +36,19 @@ func DeviceUpdate(c *gin.Context) {
 }
 
 func IPUpdate(c *gin.Context) {
+	common.InitKey(c)
+	req := service.IPUpdateRequest{}
+	if err := c.ShouldBind(&req); err != nil {
+		common.LogrusLogger.Error(err)
+		c.Keys["code"] = common.HTTP_MISS_PARAMS
+		panic(err)
+	}
+	cps := service.NewServiceMgr(c)
+	res := cps.IPUpdate(&req)
+	c.JSON(common.HTTP_STATUS_OK, &res)
+}
+
+func SwitchUpdate(c *gin.Context) {
 	common.InitKey(c)
 	req := service.IPUpdateRequest{}
 	if err := c.ShouldBind(&req); err != nil {

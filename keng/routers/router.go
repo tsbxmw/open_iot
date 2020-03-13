@@ -14,12 +14,25 @@ func InitRouter(r *gin.Engine) {
 			user.POST("/", v1.UserAdd)
 			user.GET("/", v1.UserGet)
 		}
-		keng := GroupV1.Group("/keng")
+
+		management := GroupV1.Group("/management")
 		{
-			keng.POST("/", v1.KengAdd)
-			keng.POST("/:id", v1.KengUpdate)
-			keng.GET("/", v1.KengGet)
-			keng.GET("/list", v1.KengGetList)
+			keng := management.Group("/keng")
+			{
+				keng.POST("/", v1.KengAdd)
+				keng.POST("/:id", v1.KengUpdate)
+				keng.GET("/", v1.KengGet)
+				keng.GET("/list", v1.KengGetList)
+
+			}
+		}
+
+		frontPage := GroupV1.Group("/front")
+		{
+			keng := frontPage.Group("/keng")
+			{
+				keng.GET("/", v1.KengGetFront)
+			}
 		}
 	}
 }
