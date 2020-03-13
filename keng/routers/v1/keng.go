@@ -63,7 +63,13 @@ func KengGetList(c *gin.Context) {
 }
 
 func KengGetFront(c *gin.Context) {
-	common.InitKey(c)
-	req := service.KengGetFrontRequest{}
+	// common.InitKey(c)
+	// req := service.KengGetFrontRequest{}
 
+	// cps := service.NewServiceMgr(c)
+	// res := cps.KengGet(&req)
+
+	// c.Json(common.HTTP_STATUS_OK,
+	// 	&req,
+	// )
 }
