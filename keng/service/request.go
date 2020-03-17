@@ -14,19 +14,21 @@ type (
 
 type (
 	KengAddRequest struct {
-		Name     string `json:"name" binding:"required"`
-		DeviceId int    `json:"device_id" binding:"required"`
-		RoomId   int    `json:"room_id" binding:"required"`
-		Index    int    `json:"index" binding:"required"`
-		Remark   string `json:"remark"`
+		Name         string `json:"name" binding:"required"`
+		DeviceId     int    `json:"device_id" binding:"required"`
+		DeviceGpioId int    `json:"device_gpio_id" binding:"required"`
+		RoomId       int    `json:"room_id" binding:"required"`
+		Index        int    `json:"index" binding:"required"`
+		Remark       string `json:"remark"`
 	}
 
 	KengUpdateRequest struct {
-		Name     string `json:"name" binding:"required"`
-		DeviceId int    `json:"device_id" binding:"required"`
-		RoomId   int    `json:"room_id" binding:"required"`
-		Index    int    `json:"index" binding:"required"`
-		Remark   string `json:"remark"`
+		Name         string `json:"name" binding:"required"`
+		DeviceId     int    `json:"device_id" binding:"required"`
+		DeviceGpioId int    `json:"device_gpio_id" binding:"required"`
+		RoomId       int    `json:"room_id" binding:"required"`
+		Index        int    `json:"index" binding:"required"`
+		Remark       string `json:"remark"`
 	}
 
 	KengGetRequest struct {

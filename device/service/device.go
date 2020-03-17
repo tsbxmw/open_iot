@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"open_iot/device/models"
 	"time"
 
@@ -141,9 +142,18 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 
 	redisConn := common.RedisPool.Get()
 	defer redisConn.Close()
-	if _, err := common.RedisGetCommon(redisConn, req.MacAddress); err != nil {
+	common.LogrusLogger.Info(req.MacAddress)
+
+	if value, err := redisConn.Do("Get", req.MacAddress); err != nil {
+		common.LogrusLogger.Info(value)
+
+		if sur, err = json.Marshal(value); err != nil {
+			return REDIS_SET_ERROR, err
+		}
+
+	} else {
 		common.LogrusLogger.Error(err)
-		if _, err := common.RedisSetCommon(redisConn, req.MacAddress, req); err != nil {
+		if _, err := common.RedisSetCommon(redisConn, req.MacAddress, &req); err != nil {
 			common.LogrusLogger.Error(err)
 		}
 	}
