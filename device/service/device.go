@@ -127,6 +127,68 @@ func (cps *ProjectService) IPUpdate(req *IPUpdateRequest) *IPUpdateResponse {
 		cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
 		panic(err)
 	}
+
+	return &res
+}
+
+func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateResponse {
+	res := SwitchUpdateResponse{
+		Response: common.Response{
+			Code:    common.HTTP_RESPONSE_OK,
+			Message: common.HTTP_MESSAGE_OK,
+		},
+	}
+
+	redisConn := common.RedisPool.Get()
+	defer redisConn.Close()
+	if _, err := common.RedisGetCommon(redisConn, req.MacAddress); err != nil {
+		common.LogrusLogger.Error(err)
+		if _, err := common.RedisSetCommon(redisConn, req.MacAddress, req); err != nil {
+			common.LogrusLogger.Error(err)
+		}
+	}
+	device := models.DeviceModel{}
+
+	if err := common.DB.Table(device.TableName()).
+		Where("mac_address=?", req.MacAddress).First(&device).Error; err == nil {
+		device.IpAddress = req.IpAddress
+		common.LogrusLogger.Info(device.IpAddress)
+		if err := common.DB.Model(&device).Save(&device).Error; err != nil {
+			common.LogrusLogger.Error(err)
+			common.InitKey(cps.Ctx)
+			cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+			panic(err)
+		}
+	} else {
+		common.LogrusLogger.Error(err)
+		common.InitKey(cps.Ctx)
+		cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+		panic(err)
+	}
+
+	for _, gpio_req := range req.GpioInfos {
+		gpio := models.DeviceGpioModel{}
+		if err := common.DB.Table(gpio.TableName()).
+			Where("device_id=? and gpio_number=?", device.ID, gpio_req.GpioNumber).First(&gpio).Error; err != nil {
+			common.LogrusLogger.Error(err)
+			common.InitKey(cps.Ctx)
+			cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+			panic(err)
+		} else {
+			if gpio_req.GpioStatus != gpio.GpioStatus {
+				gpio.GpioStatus = gpio_req.GpioStatus
+				if err := common.DB.Table(gpio.TableName()).Save(&gpio).Error; err != nil {
+					common.LogrusLogger.Error(err)
+					common.InitKey(cps.Ctx)
+					cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+					panic(err)
+				} else {
+					common.LogrusLogger.Info("Update Success")
+				}
+			}
+		}
+	}
+
 	return &res
 }
 

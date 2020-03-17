@@ -22,6 +22,20 @@ type (
 		common.BaseModel
 		Name string `json:"name"`
 	}
+
+	DeviceGpioModel struct {
+		common.BaseModel
+		DeviceId   int `json:"device_id"`
+		GpioNumber int `json:"gpio_number"`
+		GpioStatus int `json:"gpio_status"`
+	}
+
+	DeviceGpioRecordModel struct {
+		common.BaseModel
+		DeviceId   int `json:"device_id"`
+		GpioNumber int `json:"gpio_number"`
+		GpioStatus int `json:"gpio_status"`
+	}
 )
 
 func (DeviceModel) TableName() string {
@@ -30,4 +44,12 @@ func (DeviceModel) TableName() string {
 
 func (DeviceTypeModel) TableName() string {
 	return "device_type"
+}
+
+func (DeviceGpioModel) TableName() string {
+	return "device_gpio"
+}
+
+func (DeviceGpioRecordModel) TableName() string {
+	return "device_gpio_record"
 }

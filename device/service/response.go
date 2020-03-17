@@ -42,6 +42,10 @@ type (
 	IPUpdateResponse struct {
 		common.Response
 	}
+
+	SwitchUpdateResponse struct {
+		common.Response
+	}
 )
 
 type (

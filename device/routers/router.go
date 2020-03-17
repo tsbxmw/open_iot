@@ -55,6 +55,7 @@ func InitRouter(r *gin.Engine) {
 			device := DeviceV1.Group("/device")
 			{
 				device.POST("/ip", v1.IPUpdate)
+				device.POST("/switch", v1.SwitchUpdate)
 			}
 		}
 

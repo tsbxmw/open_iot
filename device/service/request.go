@@ -52,6 +52,17 @@ type (
 		IpAddress  string `json:"ip_address" binding:"required"`
 		MacAddress string `json:"mac_address" binding:"required"`
 	}
+
+	GpioInfo struct {
+		GpioNumber int `json:"gpio_number" binding:"required"`
+		GpioStatus int `json:"gpio_status" binding:"required"`
+	}
+
+	SwitchUpdateRequest struct {
+		IpAddress  string     `json:"ip_address" binding:"required"`
+		MacAddress string     `json:"mac_address" binding:"required"`
+		GpioInfos  []GpioInfo `json:"gpio_infos" binding:"required"`
+	}
 )
 
 type (

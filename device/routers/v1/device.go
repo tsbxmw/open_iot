@@ -50,14 +50,14 @@ func IPUpdate(c *gin.Context) {
 
 func SwitchUpdate(c *gin.Context) {
 	common.InitKey(c)
-	req := service.IPUpdateRequest{}
+	req := service.SwitchUpdateRequest{}
 	if err := c.ShouldBind(&req); err != nil {
 		common.LogrusLogger.Error(err)
 		c.Keys["code"] = common.HTTP_MISS_PARAMS
 		panic(err)
 	}
 	cps := service.NewServiceMgr(c)
-	res := cps.IPUpdate(&req)
+	res := cps.SwitchUpdate(&req)
 	c.JSON(common.HTTP_STATUS_OK, &res)
 }
 
