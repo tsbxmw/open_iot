@@ -39,8 +39,8 @@ func (httpServer HttpServer) Serve(mode string) {
 	// init logger
 	middleware.LoggerInit(engin, "./log/open_iot_device.log")
 	// init tracer
-	//middleware.TracerInit(engin, httpServer.JaegerAddr, httpServer.SvcName)
-	//defer (*middleware.TracerCloser).Close()
+	middleware.TracerInit(engin, httpServer.JaegerAddr, httpServer.SvcName)
+	defer (*middleware.TracerCloser).Close()
 	config.LoadConfig(gin.Mode())
 
 	// init redis
@@ -51,18 +51,19 @@ func (httpServer HttpServer) Serve(mode string) {
 	// init router
 	routers.InitRouter(engin)
 	// init consul
-	//consulRegister := consul.ConsulRegister{
-	//	Address:                        httpServer.Address,
-	//	Port:                           httpServer.Port,
-	//	ConsulAddress:                  httpServer.ConsulAddr,
-	//	ConsulPort:                     httpServer.ConsulPort,
-	//	Service:                        httpServer.SvcName,
-	//	Tag:                            []string{httpServer.SvcName},
-	//	DeregisterCriticalServiceAfter: time.Second * 60,
-	//	Interval:                       time.Second * 60,
-	//}
-	//
-	//consulRegister.RegisterHTTP()
+	// consulRegister := consul.ConsulRegister{
+	// 	Address:                        httpServer.Address,
+	// 	Port:                           httpServer.Port,
+	// 	ConsulAddress:                  httpServer.ConsulAddr,
+	// 	ConsulPort:                     httpServer.ConsulPort,
+	// 	Service:                        httpServer.SvcName,
+	// 	Tag:                            []string{httpServer.SvcName},
+	// 	DeregisterCriticalServiceAfter: time.Second * 60,
+	// 	Interval:                       time.Second * 60,
+	// }
+
+	// consulRegister.RegisterHTTP()
+
 	common.InitDB(httpServer.DbUri)
 	common.LogrusLogger.Info("serve on " + strconv.Itoa(httpServer.Port))
 	if err := engin.Run("0.0.0.0:" + strconv.Itoa(httpServer.Port)); err != nil {
@@ -71,24 +72,24 @@ func (httpServer HttpServer) Serve(mode string) {
 }
 
 func (httpServer HttpServer) Shutdown() {
-	//consulName := httpServer.SvcName + "-" + common.LocalIP()
-	//common.LogrusLogger.Info("Consul Deregister Now ", consulName)
-	//// init consul
-	//consulRegister := consul.ConsulRegister{
-	//	Address:                        httpServer.Address,
-	//	Port:                           httpServer.Port,
-	//	ConsulAddress:                  httpServer.ConsulAddr,
-	//	ConsulPort:                     httpServer.ConsulPort,
-	//	Service:                        httpServer.SvcName,
-	//	Tag:                            []string{httpServer.SvcName},
-	//	DeregisterCriticalServiceAfter: time.Second * 60,
-	//	Interval:                       time.Second * 60,
-	//}
-	//consulClient := consulRegister.NewConsulClient()
-	//if err := consulClient.Agent().ServiceDeregister(consulName); err != nil {
-	//	common.LogrusLogger.Error(err)
-	//	panic(err)
-	//}
+	// consulName := httpServer.SvcName + "-" + common.LocalIP()
+	// common.LogrusLogger.Info("Consul Deregister Now ", consulName)
+	// // init consul
+	// consulRegister := consul.ConsulRegister{
+	// 	Address:                        httpServer.Address,
+	// 	Port:                           httpServer.Port,
+	// 	ConsulAddress:                  httpServer.ConsulAddr,
+	// 	ConsulPort:                     httpServer.ConsulPort,
+	// 	Service:                        httpServer.SvcName,
+	// 	Tag:                            []string{httpServer.SvcName},
+	// 	DeregisterCriticalServiceAfter: time.Second * 60,
+	// 	Interval:                       time.Second * 60,
+	// }
+	// consulClient := consulRegister.NewConsulClient()
+	// if err := consulClient.Agent().ServiceDeregister(consulName); err != nil {
+	// 	common.LogrusLogger.Error(err)
+	// 	panic(err)
+	// }
 }
 
 func (httpServer HttpServer) Init(config common.ServiceConfig, configPath string) common.HttpServer {
