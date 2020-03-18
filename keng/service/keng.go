@@ -151,55 +151,52 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 		}
 		for _, lb := range allinfos.LocationBuilding {
 			common.LogrusLogger.Info(lb.LocationId)
-			if lb.LocationId == req.BuildingId {
-				kengs := make([]models.KengModel, 0)
-				if err := common.DB.Table(models.KengModel{}.TableName()).Find(&kengs).Error; err != nil {
-					common.LogrusLogger.Error(err)
-					common.InitKey(cps.Ctx)
-					cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
-					panic(err)
-				}
-				for _, bf := range lb.BuildingFloor {
-					for _, fr := range bf.FloorRoom {
-						for rdIndex, rd := range fr.RoomDevice {
-							if len(rd.DeviceGpio) == 0 {
-								continue
-							}
-							kengInfo := make([]KengInfo, 0)
-							dg := rd.DeviceGpio[0]
-							for _, gi := range dg.GpioInfo {
-								for _, keng := range kengs {
-									if keng.DeviceGpioId == gi.GpioId {
-										var kengTime string
-										if gi.GpioTime > 3600 {
-											kengTime = "超过1小时"
-										} else if gi.GpioTime > 60 {
-											mins := int(gi.GpioTime / 60)
-											seconds := int(gi.GpioTime) % 60
-											kengTime = strconv.Itoa(mins) + "分钟" + strconv.Itoa(seconds) + "秒"
-										} else {
-											seconds := int(gi.GpioTime) % 60
-											kengTime = strconv.Itoa(seconds) + "秒"
-										}
-										ki := KengInfo{
-											KengId:     keng.ID,
-											KengIndex:  keng.Index,
-											KengName:   keng.Name,
-											KengStatus: gi.GpioStatus,
-											KengTime:   kengTime,
-										}
-										kengInfo = append(kengInfo, ki)
-										break
+			kengs := make([]models.KengModel, 0)
+			if err := common.DB.Table(models.KengModel{}.TableName()).Find(&kengs).Error; err != nil {
+				common.LogrusLogger.Error(err)
+				common.InitKey(cps.Ctx)
+				cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
+				panic(err)
+			}
+			for _, bf := range lb.BuildingFloor {
+				for _, fr := range bf.FloorRoom {
+					for rdIndex, rd := range fr.RoomDevice {
+						if len(rd.DeviceGpio) == 0 {
+							continue
+						}
+						kengInfo := make([]KengInfo, 0)
+						dg := rd.DeviceGpio[0]
+						for _, gi := range dg.GpioInfo {
+							for _, keng := range kengs {
+								if keng.DeviceGpioId == gi.GpioId {
+									var kengTime string
+									if gi.GpioTime > 3600 {
+										kengTime = "超过1小时"
+									} else if gi.GpioTime > 60 {
+										mins := int(gi.GpioTime / 60)
+										seconds := int(gi.GpioTime) % 60
+										kengTime = strconv.Itoa(mins) + "分钟" + strconv.Itoa(seconds) + "秒"
+									} else {
+										seconds := int(gi.GpioTime) % 60
+										kengTime = strconv.Itoa(seconds) + "秒"
 									}
+									ki := KengInfo{
+										KengId:     keng.ID,
+										KengIndex:  keng.Index,
+										KengName:   keng.Name,
+										KengStatus: gi.GpioStatus,
+										KengTime:   kengTime,
+									}
+									kengInfo = append(kengInfo, ki)
+									break
 								}
 							}
-							fr.RoomDevice[rdIndex].KengInfo = kengInfo
 						}
-
+						fr.RoomDevice[rdIndex].KengInfo = kengInfo
 					}
 				}
-				res.Data = append(res.Data, lb)
 			}
+			res.Data = append(res.Data, lb)
 		}
 
 	}
