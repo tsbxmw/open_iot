@@ -11,7 +11,7 @@ import (
 func CornWork() {
 	common.LogrusLogger.Info("Corn work start")
 	c := cron.New(cron.WithSeconds())
-	c.AddFunc("*/3 * * * * *", MessageSendCheckWork)
+	c.AddFunc("*/5 * * * * *", MessageSendCheckWork)
 	c.Start()
 	select {}
 }
@@ -123,7 +123,7 @@ func MessageSendCheckWork() {
 						for _, gpio := range gpios {
 							gpio_record := models.DeviceGpioRecordModel{}
 							if err := common.DB.Table(gpio_record.TableName()).Where("gpio_id=?", gpio.ID).Last(&gpio_record).Error; err != nil {
-								common.LogrusLogger.Error(err)
+								common.LogrusLogger.Error(gpio.ID, err)
 							}
 							gi := Gpio{}
 							gi.GpioId = gpio.ID

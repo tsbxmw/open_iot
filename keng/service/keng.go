@@ -135,7 +135,7 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 			Code:    common.HTTP_RESPONSE_OK,
 			Message: common.HTTP_MESSAGE_OK,
 		},
-		Data: LocationBuilding{},
+		Data: make([]LocationBuilding, 0),
 	}
 	redisConn := common.RedisPool.Get()
 	defer redisConn.Close()
@@ -186,8 +186,7 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 
 					}
 				}
-				res.Data = lb
-				break
+				res.Data = append(res.Data, lb)
 			}
 		}
 

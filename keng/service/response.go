@@ -88,6 +88,6 @@ type (
 
 	KengGetFrontResponse struct {
 		common.Response
-		Data LocationBuilding `json:"data"`
+		Data []LocationBuilding `json:"data"`
 	}
 )
