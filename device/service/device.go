@@ -5,6 +5,7 @@ import (
 	"open_iot/device/models"
 	"time"
 
+	"github.com/garyburd/redigo/redis"
 	common "github.com/tsbxmw/gin_common"
 )
 
@@ -144,21 +145,37 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 	defer redisConn.Close()
 	common.LogrusLogger.Info(req.MacAddress)
 
-	if value, err := redisConn.Do("Get", req.MacAddress); err != nil {
+	if value, err := redis.Bytes(redisConn.Do("Get", req.MacAddress)); err != nil {
 		common.LogrusLogger.Info(value)
-
-		if sur, err = json.Marshal(value); err != nil {
-			return REDIS_SET_ERROR, err
-		}
-
 	} else {
-		common.LogrusLogger.Error(err)
-		if _, err := common.RedisSetCommon(redisConn, req.MacAddress, &req); err != nil {
+		// 这里获取所有的存在 redis 里的信息，看是否要更新
+		sur := SwitchUpdateRequest{}
+		if err = json.Unmarshal(value, &sur); err != nil {
 			common.LogrusLogger.Error(err)
+		} else {
+			all_same_flag := false
+			for _, info := range sur.GpioInfos {
+				for _, req_info := range req.GpioInfos {
+					if info.GpioNumber == req_info.GpioNumber {
+						if info.GpioStatus != req_info.GpioStatus {
+							all_same_flag = true
+						}
+						break
+					}
+				}
+			}
+			if !all_same_flag && sur.IpAddress == req.IpAddress { // 如果是相同的，不必入库和更新 redis，不同则更新
+				return &res
+			}
 		}
 	}
-	device := models.DeviceModel{}
+	// 如果出现错误，则入 redis
+	if _, err := common.RedisSetCommon(redisConn, req.MacAddress, &req); err != nil {
+		common.LogrusLogger.Error(err)
+	}
 
+	// 更新 device 的 ip address
+	device := models.DeviceModel{}
 	if err := common.DB.Table(device.TableName()).
 		Where("mac_address=?", req.MacAddress).First(&device).Error; err == nil {
 		device.IpAddress = req.IpAddress
@@ -176,6 +193,7 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 		panic(err)
 	}
 
+	// 更新 gpio 的状态信息
 	for _, gpio_req := range req.GpioInfos {
 		gpio := models.DeviceGpioModel{}
 		if err := common.DB.Table(gpio.TableName()).
@@ -192,8 +210,23 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 					common.InitKey(cps.Ctx)
 					cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
 					panic(err)
-				} else {
-					common.LogrusLogger.Info("Update Success")
+				}
+				// 更新记录
+				gpio_record := models.DeviceGpioRecordModel{
+					GpioId:     gpio.ID,
+					DeviceId:   gpio.DeviceId,
+					GpioNumber: gpio.GpioNumber,
+					GpioStatus: gpio.GpioStatus,
+					BaseModel: common.BaseModel{
+						CreationTime: time.Now(),
+						ModifiedTime: time.Now(),
+					},
+				}
+				if err := common.DB.Table(gpio_record.TableName()).Create(&gpio_record).Error; err != nil {
+					common.LogrusLogger.Error(err)
+					common.InitKey(cps.Ctx)
+					cps.Ctx.Keys["code"] = common.MYSQL_UPDATE_ERROR
+					panic(err)
 				}
 			}
 		}

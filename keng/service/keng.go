@@ -123,3 +123,14 @@ func (cps *ProjectService) KengGetList(req *KengGetListRequest) *KengGetListResp
 
 	return &res
 }
+
+func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontResponse {
+	res := KengGetFrontResponse{
+		Response: common.Response{
+			Code:    common.HTTP_RESPONSE_OK,
+			Message: common.HTTP_MESSAGE_OK,
+		},
+	}
+
+	return &res
+}

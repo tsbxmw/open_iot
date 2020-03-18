@@ -32,6 +32,7 @@ type (
 
 	DeviceGpioRecordModel struct {
 		common.BaseModel
+		GpioId     int `json:"gpio_id"`
 		DeviceId   int `json:"device_id"`
 		GpioNumber int `json:"gpio_number"`
 		GpioStatus int `json:"gpio_status"`
