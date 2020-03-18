@@ -13,6 +13,7 @@ type (
 		Index        int    `json:"index"`
 		Remark       string `json:"remark"`
 		DeviceGpioId int    `json:"device_gpio_id"`
+		Status       int    `json:"status"`
 	}
 )
 

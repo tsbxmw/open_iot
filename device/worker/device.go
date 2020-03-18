@@ -61,37 +61,39 @@ func MessageSendCheckWork() {
 	allinfos := AllInfoLocations{
 		LocationBuilding: make([]LocationBuilding, 0),
 	}
-
+	// 获取所有的地区信息
 	locations := make([]models.LocationModel, 0)
 	if err := common.DB.Table(models.LocationModel{}.TableName()).Find(&locations).Error; err != nil {
 		common.LogrusLogger.Error(err)
 	}
+
 	for _, location := range locations {
 		lb := LocationBuilding{
 			BuildingFloor: make([]BuildingFloor, 0),
 		}
+		// 获取当地的建筑信息
 		buildings := make([]models.BuildingModel, 0)
 		if err := common.DB.Table(models.BuildingModel{}.TableName()).Where("location_id=?", location.ID).Find(&buildings).Error; err != nil {
 			common.LogrusLogger.Error(err)
 		}
 		lb.LocationId = location.ID
 		lb.LocationName = location.Name
-
 		for _, building := range buildings {
 			bf := BuildingFloor{
 				FloorRoom: make([]FloorRoom, 0),
 			}
+			// 获取建筑的楼层信息
 			floors := make([]models.FloorModel, 0)
 			if err := common.DB.Table(models.FloorModel{}.TableName()).Where("building_id=?", building.ID).Find(&floors).Error; err != nil {
 				common.LogrusLogger.Error(err)
 			}
 			bf.BuildingId = building.ID
 			bf.BuildingName = building.Name
-
 			for _, floor := range floors {
 				fr := FloorRoom{
 					RoomDevice: make([]RoomDevice, 0),
 				}
+				// 获取楼层所有的房间信息
 				rooms := make([]models.RoomModel, 0)
 				if err := common.DB.Table(models.RoomModel{}.TableName()).Where("floor_id=?", floor.ID).Find(&rooms).Error; err != nil {
 					common.LogrusLogger.Error(err)
@@ -102,6 +104,7 @@ func MessageSendCheckWork() {
 					rd := RoomDevice{
 						DeviceGpio: make([]DeviceGpio, 0),
 					}
+					// 获取所有房间的设备信息
 					devices := make([]models.DeviceModel, 0)
 					if err := common.DB.Table(models.DeviceModel{}.TableName()).Where("room_id=?", room.ID).Find(&devices).Error; err != nil {
 						common.LogrusLogger.Error(err)
@@ -112,6 +115,7 @@ func MessageSendCheckWork() {
 						dg := DeviceGpio{
 							GpioInfo: make([]Gpio, 0),
 						}
+						// 获取设备的所有 gpio 信息
 						gpios := make([]models.DeviceGpioModel, 0)
 						if err := common.DB.Table(models.DeviceGpioModel{}.TableName()).Where("device_id=?", device.ID).Find(&gpios).Error; err != nil {
 							common.LogrusLogger.Error(err)
@@ -144,6 +148,7 @@ func MessageSendCheckWork() {
 		}
 		redisConn := common.RedisPool.Get()
 		defer redisConn.Close()
+		// 分别更新地区信息到 redis
 		if code, err := common.RedisSetCommon(redisConn, lb.LocationName, lb); err != nil {
 			common.LogrusLogger.Error(code, err)
 		}
@@ -151,6 +156,7 @@ func MessageSendCheckWork() {
 	}
 	redisConn := common.RedisPool.Get()
 	defer redisConn.Close()
+	// 更新信息到redis
 	if code, err := common.RedisSetCommon(redisConn, "allinfos", allinfos); err != nil {
 		common.LogrusLogger.Error(code, err)
 	}

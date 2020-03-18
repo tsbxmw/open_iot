@@ -1,18 +1,22 @@
 package service
 
 import (
-	common "github.com/tsbxmw/gin_common"
 	"open_iot/device/models"
 	"time"
+
+	common "github.com/tsbxmw/gin_common"
 )
 
+// 增加建筑
 func (cps *ProjectService) BuildingAdd(req *BuildingAddRequest) *BuildingAddResponse {
 	res := BuildingAddResponse{}
 	building := models.BuildingModel{}
+	// 检查检查建筑是否存在
 	if err := common.DB.Table(building.TableName()).
 		Where("name=? and location_id=?", req.Name, req.LocationId).
 		First(&building).Error; err != nil {
 		if err.Error() == "record not found" {
+			// 不存在则增加
 			building.Name = req.Name
 			building.LocationId = req.LocationId
 			building.Remark = req.Remark
@@ -39,6 +43,7 @@ func (cps *ProjectService) BuildingAdd(req *BuildingAddRequest) *BuildingAddResp
 	return &res
 }
 
+// 更新建筑信息
 func (cps *ProjectService) BuildingUpdate(id string, req *BuildingUpdateRequest) *BuildingUpdateResponse {
 	res := BuildingUpdateResponse{
 		Response: common.Response{
@@ -47,24 +52,29 @@ func (cps *ProjectService) BuildingUpdate(id string, req *BuildingUpdateRequest)
 		},
 	}
 	building := models.BuildingModel{}
+	// 查找当前建筑是否存在
 	if err := common.DB.Table(building.TableName()).First(&building, id).Error; err != nil {
 		common.LogrusLogger.Error(err)
 		common.InitKey(cps.Ctx)
 		cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
 		panic(err)
 	}
+	// 更新名称
 	if req.Name != "" {
 		building.Name = req.Name
 	}
+	// 更新地区 id
 	if req.LocationId != 0 {
 		building.LocationId = req.LocationId
 	}
+	// 更新 备注
 	if req.Remark != "" {
 		building.Remark = req.Remark
 	}
 	building.BaseModel.ModifiedTime = time.Now()
 	building.BaseModel.CreationTime = time.Now()
 
+	// 创建建筑信息
 	if err := common.DB.Table(building.TableName()).
 		Create(&building).Error; err != nil {
 		common.LogrusLogger.Error(err)
@@ -75,6 +85,7 @@ func (cps *ProjectService) BuildingUpdate(id string, req *BuildingUpdateRequest)
 	return &res
 }
 
+// 获取单个建筑信息
 func (cps *ProjectService) BuildingGet(req *BuildingGetRequest) *BuildingGetResponse {
 	building := models.BuildingModel{}
 
@@ -95,6 +106,7 @@ func (cps *ProjectService) BuildingGet(req *BuildingGetRequest) *BuildingGetResp
 	return &res
 }
 
+// 获取建筑列表
 func (cps *ProjectService) BuildingGetList(req *BuildingGetListRequest) *BuildingGetListResponse {
 	res := BuildingGetListResponse{
 		Response: common.Response{
