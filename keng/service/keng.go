@@ -152,7 +152,7 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 		for _, lb := range allinfos.LocationBuilding {
 			common.LogrusLogger.Info(lb.LocationId)
 			kengs := make([]models.KengModel, 0)
-			if err := common.DB.Table(models.KengModel{}.TableName()).Find(&kengs).Error; err != nil {
+			if err := common.DB.Table(models.KengModel{}.TableName()).Where("status=0").Find(&kengs).Error; err != nil {
 				common.LogrusLogger.Error(err)
 				common.InitKey(cps.Ctx)
 				cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR

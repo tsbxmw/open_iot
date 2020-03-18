@@ -143,7 +143,6 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 
 	redisConn := common.RedisPool.Get()
 	defer redisConn.Close()
-	common.LogrusLogger.Info(req.MacAddress)
 
 	if value, err := redis.Bytes(redisConn.Do("Get", req.MacAddress)); err != nil {
 		common.LogrusLogger.Info(value)
@@ -179,7 +178,6 @@ func (cps *ProjectService) SwitchUpdate(req *SwitchUpdateRequest) *SwitchUpdateR
 	if err := common.DB.Table(device.TableName()).
 		Where("mac_address=?", req.MacAddress).First(&device).Error; err == nil {
 		device.IpAddress = req.IpAddress
-		common.LogrusLogger.Info(device.IpAddress)
 		if err := common.DB.Model(&device).Save(&device).Error; err != nil {
 			common.LogrusLogger.Error(err)
 			common.InitKey(cps.Ctx)
