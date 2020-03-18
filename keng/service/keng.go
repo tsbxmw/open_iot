@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"open_iot/keng/models"
+	"strconv"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -169,12 +170,23 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 							for _, gi := range dg.GpioInfo {
 								for _, keng := range kengs {
 									if keng.DeviceGpioId == gi.GpioId {
+										var kengTime string
+										if gi.GpioTime > 3600 {
+											kengTime = "超过1小时"
+										} else if gi.GpioTime > 60 {
+											mins := int(gi.GpioTime / 60)
+											seconds := int(gi.GpioTime) % 60
+											kengTime = strconv.Itoa(mins) + "分钟" + strconv.Itoa(seconds) + "秒"
+										} else {
+											seconds := int(gi.GpioTime) % 60
+											kengTime = strconv.Itoa(seconds) + "秒"
+										}
 										ki := KengInfo{
 											KengId:     keng.ID,
 											KengIndex:  keng.Index,
 											KengName:   keng.Name,
 											KengStatus: gi.GpioStatus,
-											KengTime:   gi.GpioTime,
+											KengTime:   kengTime,
 										}
 										kengInfo = append(kengInfo, ki)
 										break

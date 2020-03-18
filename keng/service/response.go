@@ -79,11 +79,11 @@ type (
 	}
 
 	KengInfo struct {
-		KengId     int     `json:"keng_id"`
-		KengName   string  `json:"keng_name"`
-		KengIndex  int     `json:"keng_index"`
-		KengStatus int     `json:"keng_status"`
-		KengTime   float32 `json:"keng_time"`
+		KengId     int    `json:"keng_id"`
+		KengName   string `json:"keng_name"`
+		KengIndex  int    `json:"keng_index"`
+		KengStatus int    `json:"keng_status"`
+		KengTime   string `json:"keng_time"`
 	}
 
 	KengGetFrontResponse struct {
