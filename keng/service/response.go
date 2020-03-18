@@ -39,33 +39,51 @@ type (
 		Count  int                `json:"count"`
 	}
 
+	AllInfoLocations struct {
+		LocationBuilding []LocationBuilding `json:"locations"`
+	}
 	LocationBuilding struct {
-		LocationId   int             `json:"location_id"`
-		LocationName string          `json:"location_name"`
-		Buildings    []BuildingFloor `json:"buildings`
+		LocationId    int             `json:"location_id"`
+		LocationName  string          `json:"location_name"`
+		BuildingFloor []BuildingFloor `json:"buildings`
 	}
 
 	BuildingFloor struct {
 		BuildingId   int         `json:"building_id"`
 		BuildingName string      `json:"building_name"`
-		Floors       []FloorRoom `json:"floors"`
+		FloorRoom    []FloorRoom `json:"floors"`
 	}
 	FloorRoom struct {
-		FloorId   int        `json:"floor_id"`
-		FloorName string     `json:"floor_name"`
-		RoomKeng  []RoomKeng `json:"rooms`
+		FloorId    int          `json:"floor_id"`
+		FloorName  string       `json:"floor_name"`
+		RoomDevice []RoomDevice `json:"rooms`
 	}
-	RoomKeng struct {
-		RoomId   int        `json:"room_id"`
-		RoomName string     `json:"room_name"`
-		Keng     []KengInfo `json:"kengs"`
+	RoomDevice struct {
+		RoomId     int          `json:"room_id"`
+		RoomName   string       `json:"room_name"`
+		DeviceGpio []DeviceGpio `json:"device"`
+		KengInfo   []KengInfo   `json:"keng_info"`
+	}
+
+	DeviceGpio struct {
+		DeviceId   int    `json:"device_id"`
+		DeviceName string `json:"device_name"`
+		GpioInfo   []Gpio `json:"gpio_info"`
+	}
+
+	Gpio struct {
+		GpioId     int     `json:"gpio_id"`
+		GpioNumber int     `json:"gpio_number"`
+		GpioStatus int     `json:"gpio_status"`
+		GpioTime   float32 `json:"gpio_time"`
 	}
 
 	KengInfo struct {
-		KengId     int    `json:"keng_id"`
-		KengName   string `json:"keng_name"`
-		KengIndex  int    `json:"keng_index"`
-		KengStatus int    `json:"keng_status"`
+		KengId     int     `json:"keng_id"`
+		KengName   string  `json:"keng_name"`
+		KengIndex  int     `json:"keng_index"`
+		KengStatus int     `json:"keng_status"`
+		KengTime   float32 `json:"keng_time"`
 	}
 
 	KengGetFrontResponse struct {

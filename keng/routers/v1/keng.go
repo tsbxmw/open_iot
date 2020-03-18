@@ -65,11 +65,14 @@ func KengGetList(c *gin.Context) {
 func KengGetFront(c *gin.Context) {
 	common.InitKey(c)
 	req := service.KengGetFrontRequest{}
-
+	if err := c.ShouldBind(&req); err != nil {
+		c.Keys["code"] = common.HTTP_MISS_PARAMS
+		panic(err)
+	}
 	cps := service.NewServiceMgr(c)
 	res := cps.KengGetFront(&req)
 
 	c.JSON(common.HTTP_STATUS_OK,
-		&req,
+		&res,
 	)
 }

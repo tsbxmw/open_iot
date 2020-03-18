@@ -1,9 +1,10 @@
 package v1
 
 import (
+	"go_gin_sample/project/service"
+
 	"github.com/gin-gonic/gin"
 	common "github.com/tsbxmw/gin_common"
-	"go_gin_sample/project/service"
 )
 
 func UserAdd(c *gin.Context) {

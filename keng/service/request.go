@@ -41,9 +41,11 @@ type (
 		BuildingId int `form:"building_id"`
 		RoomId     int `form:"room_id"`
 		DeviceId   int `form:"device_id"`
+		FloorId    int `form:"floor_id"`
 	}
 
 	KengGetFrontRequest struct {
+		LocationId int `form:"location_id" binding:"required"`
 		BuildingId int `form:"building_id" binding:"required"`
 	}
 )

@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/json"
 	"open_iot/keng/models"
 	"time"
 
+	"github.com/garyburd/redigo/redis"
 	common "github.com/tsbxmw/gin_common"
 )
 
@@ -114,6 +116,9 @@ func (cps *ProjectService) KengGetList(req *KengGetListRequest) *KengGetListResp
 	if req.DeviceId != 0 {
 		db = db.Where("device_id=?", req.DeviceId)
 	}
+	if req.BuildingId != 0 {
+		db = db.Where("building_id=?", req.BuildingId)
+	}
 	if err := db.Offset((req.Offset - 1) * req.Limit).Limit(req.Limit).Find(&res.Data).Error; err != nil {
 		common.LogrusLogger.Error(err)
 		common.InitKey(cps.Ctx)
@@ -130,7 +135,62 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 			Code:    common.HTTP_RESPONSE_OK,
 			Message: common.HTTP_MESSAGE_OK,
 		},
+		Data: LocationBuilding{},
 	}
+	redisConn := common.RedisPool.Get()
+	defer redisConn.Close()
+	if value, err := redis.Bytes(redisConn.Do("Get", "allinfos")); err != nil {
+		common.LogrusLogger.Error(err)
+		common.LogrusLogger.Info(value)
+	} else {
+		// 这里获取所有的存在 redis 里的信息，看是否要更新
+		allinfos := AllInfoLocations{}
+		if err = json.Unmarshal(value, &allinfos); err != nil {
+			common.LogrusLogger.Error(err)
+		}
+		for _, lb := range allinfos.LocationBuilding {
+			common.LogrusLogger.Info(lb.LocationId)
+			if lb.LocationId == req.BuildingId {
+				kengs := make([]models.KengModel, 0)
+				if err := common.DB.Table(models.KengModel{}.TableName()).Where("building_id=?", req.BuildingId).Find(&kengs).Error; err != nil {
+					common.LogrusLogger.Error(err)
+					common.InitKey(cps.Ctx)
+					cps.Ctx.Keys["code"] = common.MYSQL_QUERY_ERROR
+					panic(err)
+				}
+				for _, bf := range lb.BuildingFloor {
+					for _, fr := range bf.FloorRoom {
+						for rdIndex, rd := range fr.RoomDevice {
+							if len(rd.DeviceGpio) == 0 {
+								continue
+							}
+							kengInfo := make([]KengInfo, 0)
+							dg := rd.DeviceGpio[0]
+							for _, gi := range dg.GpioInfo {
+								for _, keng := range kengs {
+									if keng.DeviceGpioId == gi.GpioId {
+										ki := KengInfo{
+											KengId:     keng.ID,
+											KengIndex:  keng.Index,
+											KengName:   keng.Name,
+											KengStatus: gi.GpioStatus,
+											KengTime:   gi.GpioTime,
+										}
+										kengInfo = append(kengInfo, ki)
+										break
+									}
+								}
+							}
+							fr.RoomDevice[rdIndex].KengInfo = kengInfo
+						}
 
+					}
+				}
+				res.Data = lb
+				break
+			}
+		}
+
+	}
 	return &res
 }
