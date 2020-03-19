@@ -13,3 +13,4 @@ log/open_iot.*
 
 ./device/config/dev.json
 ./keng/config/dev.json
+*local.json
