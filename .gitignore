@@ -10,3 +10,6 @@ device/.DS_Store
 device/models/.DS_Store
 
 log/open_iot.*
+
+./device/config/dev.json
+./keng/config/dev.json
