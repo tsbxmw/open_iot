@@ -127,7 +127,9 @@ func MessageSendCheckWork() {
 						for _, gpio := range gpios {
 							gpio_record := models.DeviceGpioRecordModel{}
 							if err := common.DB.Table(gpio_record.TableName()).Where("gpio_id=?", gpio.ID).Last(&gpio_record).Error; err != nil {
-								common.LogrusLogger.Error(gpio.ID, err)
+								if err.Error() != "record not found" {
+									common.LogrusLogger.Error(gpio.ID, err)
+								}
 							}
 							gi := Gpio{}
 							gi.GpioId = gpio.ID
@@ -146,18 +148,20 @@ func MessageSendCheckWork() {
 			}
 			lb.BuildingFloor = append(lb.BuildingFloor, bf)
 		}
-		redisConn := common.RedisPool.Get()
-		defer redisConn.Close()
-		// 分别更新地区信息到 redis
-		if code, err := common.RedisSetCommon(redisConn, lb.LocationName, lb); err != nil {
-			common.LogrusLogger.Error(code, err)
-		}
+		// redisConn := common.RedisPool.Get()
+		// defer redisConn.Close()
+		// // 分别更新地区信息到 redis
+		// if code, err := common.RedisSetCommon(redisConn, lb.LocationName, lb); err != nil {
+		// 	common.LogrusLogger.Error(code, err)
+		// }
 		allinfos.LocationBuilding = append(allinfos.LocationBuilding, lb)
 	}
-	redisConn := common.RedisPool.Get()
-	defer redisConn.Close()
-	// 更新信息到redis
-	if code, err := common.RedisSetCommon(redisConn, "allinfos", allinfos); err != nil {
-		common.LogrusLogger.Error(code, err)
+	if len(allinfos.LocationBuilding) > 0 {
+		redisConn := common.RedisPool.Get()
+		defer redisConn.Close()
+		// 更新信息到redis
+		if code, err := common.RedisSetCommon(redisConn, "allinfos", &allinfos); err != nil {
+			common.LogrusLogger.Error(code, err)
+		}
 	}
 }
