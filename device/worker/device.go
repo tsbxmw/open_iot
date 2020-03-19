@@ -148,12 +148,12 @@ func MessageSendCheckWork() {
 			}
 			lb.BuildingFloor = append(lb.BuildingFloor, bf)
 		}
-		// redisConn := common.RedisPool.Get()
-		// defer redisConn.Close()
-		// // 分别更新地区信息到 redis
-		// if code, err := common.RedisSetCommon(redisConn, lb.LocationName, lb); err != nil {
-		// 	common.LogrusLogger.Error(code, err)
-		// }
+		redisConn := common.RedisPool.Get()
+		defer redisConn.Close()
+		// 分别更新地区信息到 redis
+		if code, err := common.RedisSetCommon(redisConn, lb.LocationName, lb); err != nil {
+			common.LogrusLogger.Error(code, err)
+		}
 		allinfos.LocationBuilding = append(allinfos.LocationBuilding, lb)
 	}
 	if len(allinfos.LocationBuilding) > 0 {
