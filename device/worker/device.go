@@ -11,7 +11,7 @@ import (
 func CornWork() {
 	common.LogrusLogger.Info("Corn work start")
 	c := cron.New(cron.WithSeconds())
-	c.AddFunc("*/5 * * * * *", MessageSendCheckWork)
+	c.AddFunc("*/3 * * * * *", MessageSendCheckWork)
 	c.Start()
 	select {}
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"open_iot/keng/models"
+	"time"
 
 	common "github.com/tsbxmw/gin_common"
 )
@@ -89,5 +90,18 @@ type (
 	KengGetFrontResponse struct {
 		common.Response
 		Data []LocationBuilding `json:"data"`
+	}
+
+	KengHistoryInfo struct {
+		KengId     int       `json:"keng_id"`
+		KengName   string    `json:"keng_name"`
+		KengIndex  int       `json:"keng_index"`
+		KengStatus int       `json:"keng_status"`
+		TimePoint  time.Time `json:"time_point"`
+	}
+
+	KengGetFrontHistoryResponse struct {
+		common.Response
+		Data []KengHistoryInfo `json:"data"`
 	}
 )

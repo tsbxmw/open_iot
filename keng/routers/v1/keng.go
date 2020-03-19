@@ -76,3 +76,18 @@ func KengGetFront(c *gin.Context) {
 		&res,
 	)
 }
+
+func KengGetFrontHistory(c *gin.Context) {
+	common.InitKey(c)
+	req := service.KengGetFrontHistoryRequest{}
+	if err := c.ShouldBind(&req); err != nil {
+		c.Keys["code"] = common.HTTP_MISS_PARAMS
+		panic(err)
+	}
+	cps := service.NewServiceMgr(c)
+	res := cps.KengGetFrontHistory(&req)
+
+	c.JSON(common.HTTP_STATUS_OK,
+		&res,
+	)
+}

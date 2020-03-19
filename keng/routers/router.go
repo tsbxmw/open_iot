@@ -32,6 +32,7 @@ func InitRouter(r *gin.Engine) {
 			keng := frontPage.Group("/keng")
 			{
 				keng.GET("/", v1.KengGetFront)
+				keng.GET("/history", v1.KengGetFrontHistory)
 			}
 		}
 	}

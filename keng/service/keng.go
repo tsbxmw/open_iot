@@ -202,3 +202,15 @@ func (cps *ProjectService) KengGetFront(req *KengGetFrontRequest) *KengGetFrontR
 	}
 	return &res
 }
+
+func (cps *ProjectService) KengGetFrontHistory(req *KengGetFrontHistoryRequest) *KengGetFrontHistoryResponse {
+	res := KengGetFrontHistoryResponse{
+		Response: common.Response{
+			Code:    common.HTTP_RESPONSE_OK,
+			Message: common.HTTP_MESSAGE_OK,
+		},
+		Data: make([]KengHistoryInfo, 0),
+	}
+
+	return &res
+}

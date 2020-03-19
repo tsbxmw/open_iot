@@ -48,4 +48,8 @@ type (
 		LocationId int `form:"location_id" binding:"required"`
 		BuildingId int `form:"building_id" binding:"required"`
 	}
+
+	KengGetFrontHistoryRequest struct {
+		KengId int `form:"keng_id" binding:"required"`
+	}
 )
